@@ -63,13 +63,14 @@ export const App = () => {
       return preVcurrentPage + 1;
     });
   };
+  const shouldRenderButton = picture.length > 0 && !loading;
   return (
     <>
       <Searchbar onSubmit={handlerFromForm} />
 
       <ImageGallery dataPicture={picture} clickOnPic={showToggleModal} />
       {loading && <Loader />}
-      {picture.length >= 12 && (
+      {shouldRenderButton && (
         <Button
           disabled={totalHits === picture.length}
           onClick={loadMOreButton}
