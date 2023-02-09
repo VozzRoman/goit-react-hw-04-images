@@ -9,7 +9,7 @@ export const ImageGallery = ({ dataPicture, clickOnPic }) => {
         const { id } = el;
         return (
           // <li> Лишки по заданию в разметке ImageGalleryItem
-          <ImageGalleryItem key={id} el={el} clickOnItemPic={clickOnPic} />
+          <ImageGalleryItem key={id} el={el} clickOnItemPic="" />
           // </li>
         );
       })}
@@ -18,29 +18,10 @@ export const ImageGallery = ({ dataPicture, clickOnPic }) => {
 };
 
 ImageGallery.propTypes = {
-  clickOnPic: PropTypes.func.isRequired,
+  //   clickOnPic: PropTypes.func.isRequired,
   dataPicture: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
     }).isRequired
   ).isRequired,
 };
-// // export class ImageGallery extends Component {
-// //   render() {
-// //     return (
-// <>
-//   {/* <ul className={css.ImageGallery}>
-//           {this.props.dataPicture.map(el => {
-//             return (
-//               <ImageGalleryItem
-//                 key={el.id}
-//                 el={el}
-//                 clickOnItemPic={this.props.clickOnPic}
-//               />
-//             );
-//           })}
-//         </ul> */}
-// </>;
-// //     );
-// //   }
-// // }
