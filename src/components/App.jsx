@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Component } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Searchbar } from './Searchbar/Searchbar';
 import { fecthServerApi } from 'api/apiService';

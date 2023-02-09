@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Component } from 'react';
 import css from '../Searchbar/SearchbarStlye.module.css';
-import Notiflix from 'notiflix';
-import PropTypes from 'prop-types';
+// import Notiflix from 'notiflix';
+// import PropTypes from 'prop-types';
 
 export const Searchbar = ({ onSubmit }) => {
   const [search, setSearch] = useState('');
