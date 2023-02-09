@@ -2,48 +2,45 @@ import { useState, useEffect } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Searchbar } from './Searchbar/Searchbar';
 import { fecthServerApi } from 'api/apiService';
-// import { Modal } from './Modal/Modal';
-// import { Loader } from './Loader/Loader';
-// import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
 import Notiflix from 'notiflix';
 
 export const App = () => {
-  //  state = {
-  //    search: '',
-  //    picture: [],
-  //    currentPage: 1,
-  //    totalHits: 0,
-  //    visibility: false,
-  //    image: '',
-  //    loading: false,
-  //    tags: '',
-  //  };
-
   const [search, setSearch] = useState('');
   const [picture, setPicture] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  //   const [totalHits, setTotalHits] = useState(0);
-  //   const [visibility, setVisibility] = useState(false);
-  //   const [image, setImage] = useState('');
-  //   const [loading, setLoading] = useState(false);
-  //   const [tags, setTags] = useState('');
-
-  const fetchData = async (search, currentPage) => {
-    const data = await fecthServerApi(search, currentPage);
-    console.log(search);
-    console.log(currentPage);
-    console.log(data);
-    if (data.hits.length < 1) {
-      return Notiflix.Notify.info(
-        'Sorry, but no images matching your search query. Enter correct value.'
-      );
-    }
-    setPicture(prevPicture => {
-      return [...prevPicture, ...data.hits];
-    });
-  };
+  const [totalHits, setTotalHits] = useState(0);
+  const [visibility, setVisibility] = useState(false);
+  const [image, setImage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState('');
 
   useEffect(() => {
+    if (search === '') {
+      return;
+    }
+    setLoading(true);
+    const fetchData = async () => {
+      try {
+        const data = await fecthServerApi(search, currentPage);
+        if (data.hits.length < 1) {
+          return Notiflix.Notify.info(
+            'Sorry, but no images matching your search query. Enter correct value.'
+          );
+        }
+        setPicture(prevPicture => {
+          return [...prevPicture, ...data.hits];
+        });
+        setTotalHits(data.total);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData(search, currentPage);
   }, [search, currentPage]);
 
@@ -52,33 +49,44 @@ export const App = () => {
     setSearch(search);
     setPicture([]);
     setCurrentPage(1);
+    setImage('');
+  };
 
-    //  setImage('');
+  const showToggleModal = (image, tags) => {
+    setVisibility(prevState => !prevState);
+    setImage(image);
+    setTags(tags);
+  };
+
+  const loadMOreButton = () => {
+    setCurrentPage(preVcurrentPage => {
+      return preVcurrentPage + 1;
+    });
   };
   return (
     <>
       <Searchbar onSubmit={handlerFromForm} />
 
-      <ImageGallery dataPicture={picture} clickOnPic="" />
-      {/* {loading && <Loader />}
-        {picture.length >= 12 && (
-          <Button
-            disabled={this.state.totalHits === picture.length}
-            onClick={this.loadMOreButton}
-            textChenge={
-              totalHits === picture.length ? 'No more picture' : 'Load More'
-            }
-          />
-        )} */}
+      <ImageGallery dataPicture={picture} clickOnPic={showToggleModal} />
+      {loading && <Loader />}
+      {picture.length >= 12 && (
+        <Button
+          disabled={totalHits === picture.length}
+          onClick={loadMOreButton}
+          textChenge={
+            totalHits === picture.length ? 'No more picture' : 'Load More'
+          }
+        />
+      )}
 
-      {/* {visibility && (
-          <Modal
-            closeModal={this.showToggleModal}
-            img={image}
-            tags={tags}
-            state={visibility}
-          />
-        )} */}
+      {visibility && (
+        <Modal
+          closeModal={showToggleModal}
+          img={image}
+          tags={tags}
+          state={visibility}
+        />
+      )}
     </>
   );
 };

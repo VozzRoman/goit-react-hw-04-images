@@ -9,7 +9,7 @@ export const ImageGallery = ({ dataPicture, clickOnPic }) => {
         const { id } = el;
         return (
           // <li> Лишки по заданию в разметке ImageGalleryItem
-          <ImageGalleryItem key={id} el={el} clickOnItemPic="" />
+          <ImageGalleryItem key={id} el={el} clickOnItemPic={clickOnPic} />
           // </li>
         );
       })}
@@ -18,7 +18,7 @@ export const ImageGallery = ({ dataPicture, clickOnPic }) => {
 };
 
 ImageGallery.propTypes = {
-  //   clickOnPic: PropTypes.func.isRequired,
+  clickOnPic: PropTypes.func.isRequired,
   dataPicture: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,

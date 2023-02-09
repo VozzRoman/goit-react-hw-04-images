@@ -1,49 +1,41 @@
-import { Component } from 'react';
 import css from '../Modal/ModalStyle.module.css';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export class Modal extends Component {
-  static propTypes = {
-    closeModal: PropTypes.func.isRequired,
-    img: PropTypes.string.isRequired,
-    tags: PropTypes.string.isRequired,
-  };
+export const Modal = ({ img, tags, closeModal }) => {
+  useEffect(() => {
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        console.log('close');
+        closeModal();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeModal]);
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      console.log('close');
-      this.props.closeModal();
-    }
-  };
-
-  handleBackDrop = e => {
-    console.log(e.currentTarget);
-    console.log(e.target);
+  const handleBackDrop = e => {
     if (e.currentTarget === e.target) {
-      this.props.closeModal();
+      closeModal();
     }
   };
+  return createPortal(
+    <div className={css.Overlay} onClick={handleBackDrop}>
+      <div className={css.Modal}>
+        <img src={img} alt={tags} />
+      </div>
+    </div>,
+    modalRoot
+  );
+};
 
-  render() {
-    const { img, tags } = this.props;
-    return createPortal(
-      <div className={css.Overlay} onClick={this.handleBackDrop}>
-        <div className={css.Modal}>
-          <img src={img} alt={tags} />
-        </div>
-      </div>,
-      modalRoot
-    );
-  }
-}
+Modal.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  img: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
+};
